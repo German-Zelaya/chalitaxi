@@ -38,6 +38,9 @@ class _LocationTrackerScreenState extends State<LocationTrackerScreen> {
   double speedInMetersPerSecond = 0.0;
   StreamSubscription<Position>? positionStreamSubscription;
   DateTime? lastUpdateTime;
+  double tarifaTotal = 0.0;
+  double ultimaDistanciaCobrada = 0.0;
+
 
   @override
   void initState() {
@@ -82,6 +85,8 @@ class _LocationTrackerScreenState extends State<LocationTrackerScreen> {
       });
     }
   }
+
+
 
   bool _isValidMovement(Position position) {
     if (lastPosition == null) {
@@ -138,6 +143,30 @@ class _LocationTrackerScreenState extends State<LocationTrackerScreen> {
     return true;
   }
 
+  void _actualizarTarifa() {
+    double distanciaNueva = distanceInMeters - ultimaDistanciaCobrada;
+
+    if (distanciaNueva >= 3 && tarifaTotal == 0) {
+      // Primeros 3 metros cobran 5 Bs
+      setState(() {
+        tarifaTotal = 5.0;
+        // Calculamos si hay metros extra en este primer tramo
+        double metrosExtra = distanciaNueva - 3;
+        if (metrosExtra >= 1) {
+          tarifaTotal += (metrosExtra.floor() * 1.5);
+        }
+        ultimaDistanciaCobrada = 3.0 + metrosExtra.floor();
+      });
+    } else if (distanciaNueva >= 1 && ultimaDistanciaCobrada >= 3) {
+      // Después de los primeros 3 metros, cada metro adicional cobra 1.5 Bs
+      int metrosExtra = distanciaNueva.floor();
+      setState(() {
+        tarifaTotal += metrosExtra * 1.5;
+        ultimaDistanciaCobrada += metrosExtra;
+      });
+    }
+  }
+
   void _startTracking() {
     setState(() {
       isTracking = true;
@@ -146,6 +175,8 @@ class _LocationTrackerScreenState extends State<LocationTrackerScreen> {
       lastPosition = null;
       lastUpdateTime = null;
       statusMessage = 'Iniciando rastreo...';
+      tarifaTotal = 0.0;
+      ultimaDistanciaCobrada = 0.0;
     });
 
     try {
@@ -175,6 +206,7 @@ Velocidad: ${speedInMetersPerSecond.toStringAsFixed(1)} m/s
 Precisión: ${position.accuracy.toStringAsFixed(1)} m
 ''';
               });
+              _actualizarTarifa();
             } else {
               setState(() {
                 positions.add(position);
@@ -218,6 +250,18 @@ Precisión: ${position.accuracy.toStringAsFixed(1)} m
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text( 'Tarifa actual:',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              '${tarifaTotal.toStringAsFixed(1)} Bs',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 30),
             Text(
               'Distancia total:',
               style: Theme.of(context).textTheme.headlineSmall,
