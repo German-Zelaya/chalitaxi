@@ -40,6 +40,22 @@ class _LocationTrackerScreenState extends State<LocationTrackerScreen> {
   DateTime? lastUpdateTime;
   double tarifaTotal = 0.0;
   double ultimaDistanciaCobrada = 0.0;
+  int pasajerosAdultos = 1;
+  int pasajerosNinos = 0;
+
+  double calcularTarifaInicial() {
+    double tarifa = 5.0;  // Tarifa base por el primer adulto
+
+    // Sumar por adultos adicionales
+    if (pasajerosAdultos > 1) {
+      tarifa += (pasajerosAdultos - 1) * 3.0;
+    }
+
+    // Sumar por niños
+    tarifa += pasajerosNinos * 2.0;
+
+    return tarifa;
+  }
 
 
   @override
@@ -144,26 +160,32 @@ class _LocationTrackerScreenState extends State<LocationTrackerScreen> {
   }
 
   void _actualizarTarifa() {
-    double distanciaNueva = distanceInMeters - ultimaDistanciaCobrada;
+    // Si aún no hemos cobrado nada (inicio del viaje)
+    if (ultimaDistanciaCobrada == 0) {
+      setState(() {
+        // Aplicamos la tarifa inicial
+        tarifaTotal = calcularTarifaInicial();
 
-    if (distanciaNueva >= 3 && tarifaTotal == 0) {
-      // Primeros 3 metros cobran 5 Bs
-      setState(() {
-        tarifaTotal = 5.0;
-        // Calculamos si hay metros extra en este primer tramo
-        double metrosExtra = distanciaNueva - 3;
-        if (metrosExtra >= 1) {
-          tarifaTotal += (metrosExtra.floor() * 1.5);
+        // Si ya superamos los 3 metros iniciales
+        if (distanceInMeters > 3) {
+          // Calculamos cuántos metros extra después de los 3 metros
+          double metrosExtra = distanceInMeters - 3;
+          // Añadimos 1.5 Bs por cada metro extra
+          tarifaTotal += metrosExtra.floor() * 1.5;
+          ultimaDistanciaCobrada = 3.0 + metrosExtra.floor().toDouble();
+        } else {
+          ultimaDistanciaCobrada = distanceInMeters.floor().toDouble();
         }
-        ultimaDistanciaCobrada = 3.0 + metrosExtra.floor();
       });
-    } else if (distanciaNueva >= 1 && ultimaDistanciaCobrada >= 3) {
-      // Después de los primeros 3 metros, cada metro adicional cobra 1.5 Bs
-      int metrosExtra = distanciaNueva.floor();
-      setState(() {
-        tarifaTotal += metrosExtra * 1.5;
-        ultimaDistanciaCobrada += metrosExtra;
-      });
+    } else if (distanceInMeters > 3) {
+      // Para actualizaciones posteriores, calculamos nuevos metros extra
+      double nuevosMetros = distanceInMeters - ultimaDistanciaCobrada;
+      if (nuevosMetros >= 1) {
+        setState(() {
+          tarifaTotal += nuevosMetros.floor() * 1.5;
+          ultimaDistanciaCobrada += nuevosMetros.floor().toDouble();
+        });
+      }
     }
   }
 
@@ -250,7 +272,66 @@ Precisión: ${position.accuracy.toStringAsFixed(1)} m
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text( 'Tarifa actual:',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    const Text('Adultos'),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: !isTracking && pasajerosAdultos > 1
+                              ? () => setState(() => pasajerosAdultos--)
+                              : null,
+                        ),
+                        Text('$pasajerosAdultos'),
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: !isTracking
+                              ? () => setState(() => pasajerosAdultos++)
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 20),
+                Column(
+                  children: [
+                    const Text('Niños'),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: !isTracking && pasajerosNinos > 0
+                              ? () => setState(() => pasajerosNinos--)
+                              : null,
+                        ),
+                        Text('$pasajerosNinos'),
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: !isTracking
+                              ? () => setState(() => pasajerosNinos++)
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            // Tarifa inicial
+            Text(
+              'Tarifa inicial: ${calcularTarifaInicial().toStringAsFixed(1)} Bs',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 10),
+
+            Text(
+              'Tarifa actual:',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 10),
@@ -261,7 +342,7 @@ Precisión: ${position.accuracy.toStringAsFixed(1)} m
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             Text(
               'Distancia total:',
               style: Theme.of(context).textTheme.headlineSmall,
