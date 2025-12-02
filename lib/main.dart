@@ -114,7 +114,7 @@ class _LocationTrackerScreenState extends State<LocationTrackerScreen> {
     if (position.accuracy > 15) {
       setState(() {
         statusMessage =
-        'Esperando mejor precisión: ${position.accuracy.toStringAsFixed(1)} km';
+        'Esperando mejor precisión: ${position.accuracy.toStringAsFixed(1)} m';
       });
       return false;
     }
@@ -231,8 +231,8 @@ class _LocationTrackerScreenState extends State<LocationTrackerScreen> {
                 distanceInMeters += newDistance;
                 positions.add(position);
                 statusMessage = '''
-Velocidad: ${speedInMetersPerSecond.toStringAsFixed(1)} km/h
-Precisión: ${position.accuracy.toStringAsFixed(1)} km
+Velocidad: ${speedInMetersPerSecond.toStringAsFixed(1)} m/h
+Precisión: ${position.accuracy.toStringAsFixed(1)} m
 ''';
               });
               _actualizarTarifa();
@@ -470,7 +470,7 @@ Precisión: ${position.accuracy.toStringAsFixed(1)} km
                   ),
                 ),
                 Text(
-                  '${distanceInMeters.toStringAsFixed(1)} kilometros recorridos',
+                  '${distanceInMeters.toStringAsFixed(1)} metros recorridos',
                   style: const TextStyle(
                     color: Colors.black54,
                     fontSize: 14,
@@ -497,7 +497,7 @@ Precisión: ${position.accuracy.toStringAsFixed(1)} km
                   Column(
                     children: [
                       Text(
-                        '${distanceInMeters.toStringAsFixed(1)} km',
+                        '${distanceInMeters.toStringAsFixed(1)} m',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 40,
