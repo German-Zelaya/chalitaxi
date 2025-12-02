@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'screens/destination_selection_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -288,6 +289,27 @@ Precisión: ${position.accuracy.toStringAsFixed(1)} m
         ),
         centerTitle: true,  // Para centrarlo como en la imagen
       ),
+      // Botón flotante para acceder a rutas
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const DestinationSelectionScreen(),
+            ),
+          );
+        },
+        backgroundColor: Colors.blue[700],
+        icon: const Icon(Icons.map, color: Colors.white),
+        label: const Text(
+          'Ver Rutas',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Column(
         children: [
           // Sección Pasajeros
