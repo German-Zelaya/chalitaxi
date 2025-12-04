@@ -290,65 +290,213 @@ Precisión: ${position.accuracy.toStringAsFixed(1)} m
         ),
         centerTitle: true,  // Para centrarlo como en la imagen
       ),
-      // Botones flotantes para rutas
+      // Botones flotantes con diseño vistoso
       floatingActionButton: Stack(
         children: [
-          // Botón izquierdo: Ruta Personalizada
+          // Botón izquierdo: Rutas Personalizadas
           Positioned(
-            left: 30,
+            left: 16,
             bottom: 16,
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CustomRouteScreen(
-                      adultos: pasajerosAdultos,
-                      ninos: pasajerosNinos,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.red[700]!, Colors.red[500]!],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red.withOpacity(0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CustomRouteScreen(
+                              adultos: pasajerosAdultos,
+                              ninos: pasajerosNinos,
+                            ),
+                          ),
+                        );
+                      },
+                      customBorder: const CircleBorder(),
+                      child: const Icon(
+                        Icons.edit_location,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
                   ),
-                );
-              },
-              backgroundColor: Colors.purple[600],
-              heroTag: 'custom_route', // Necesario para múltiples FABs
-              icon: const Icon(Icons.edit_location, color: Colors.white),
-              label: const Text(
-                'Personalizada',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
                 ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Rutas\nPersonalizadas',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    height: 1.1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Botón central elevado: Información de Tarifas
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30, // Más elevado que los otros
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 75,
+                    height: 75,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.red[800]!, Colors.red[600]!],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.5),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 3,
+                      ),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          // TODO: Navegar a pantalla de información de tarifas
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Función en desarrollo'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                        customBorder: const CircleBorder(),
+                        child: const Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
+                          size: 36,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      'Información\nde Tarifas',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
+
           // Botón derecho: Rutas Recomendadas
           Positioned(
             right: 16,
             bottom: 16,
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DestinationSelectionScreen(
-                      adultos: pasajerosAdultos,
-                      ninos: pasajerosNinos,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.red[700]!, Colors.red[500]!],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red.withOpacity(0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DestinationSelectionScreen(
+                              adultos: pasajerosAdultos,
+                              ninos: pasajerosNinos,
+                            ),
+                          ),
+                        );
+                      },
+                      customBorder: const CircleBorder(),
+                      child: const Icon(
+                        Icons.map,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
                   ),
-                );
-              },
-              backgroundColor: Colors.blue[700],
-              heroTag: 'recommended_route', // Necesario para múltiples FABs
-              icon: const Icon(Icons.map, color: Colors.white),
-              label: const Text(
-                'Recomendadas',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
                 ),
-              ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Rutas\nRecomendadas',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    height: 1.1,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
