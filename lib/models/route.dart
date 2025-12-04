@@ -39,6 +39,7 @@ class RouteInfo {
   /// Usando las mismas tarifas del taxímetro pero aplicadas a kilómetros:
   /// - Tarifa base para 1 adulto: 5 Bs (incluye los primeros 3 km)
   /// - 1.5 Bs por kilómetro adicional después de los primeros 3 km
+  /// - Los kilómetros se redondean: >= 0.5 sube, < 0.5 se mantiene
   double calculateEstimatedFare({int adults = 1, int children = 0}) {
     double baseFare = 5.0; // Primer adulto
 
@@ -53,9 +54,13 @@ class RouteInfo {
     // Convertir distancia de metros a kilómetros
     double distanceInKm = distanceInMeters / 1000;
 
-    // Tarifa por distancia (en kilómetros)
-    if (distanceInKm > 3) {
-      double extraKm = distanceInKm - 3;
+    // Redondear kilómetros: >= 0.5 sube, < 0.5 se mantiene
+    // Ejemplo: 6.66 km → 7 km, 6.4 km → 6 km
+    int distanceRounded = distanceInKm.round();
+
+    // Tarifa por distancia (en kilómetros redondeados)
+    if (distanceRounded > 3) {
+      int extraKm = distanceRounded - 3;
       baseFare += extraKm * 1.5;
     }
 
