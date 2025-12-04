@@ -89,22 +89,24 @@ http: ^1.2.0          # Para llamadas HTTP a OSRM
 
 ## Cálculo de Tarifas Estimadas
 
-La tarifa estimada se calcula usando las mismas reglas del taxímetro:
+La tarifa estimada se calcula usando las mismas reglas del taxímetro pero **aplicadas a KILÓMETROS** (no metros):
 
-- **Tarifa base**: 5 Bs (primer adulto)
+- **Tarifa base**: 5 Bs (primer adulto, incluye los primeros 3 km)
 - **Adultos adicionales**: 3 Bs cada uno
 - **Niños**: 2 Bs cada uno
-- **Por distancia**: 1.5 Bs por metro después de los primeros 3 metros
+- **Por distancia**: 1.5 Bs por **kilómetro** adicional después de los primeros 3 km
+
+**NOTA IMPORTANTE**: El taxímetro original trabaja en metros, pero las rutas recomendadas trabajan en kilómetros para dar precios más realistas.
 
 Ejemplo:
-- Distancia: 1500 metros
+- Distancia: 5 km (5000 metros)
 - Pasajeros: 2 adultos, 1 niño
 - Cálculo:
   - Base: 5 Bs
   - Adulto adicional: 3 Bs
   - Niño: 2 Bs
-  - Distancia (1500-3 = 1497m): 1497 × 1.5 = 2245.5 Bs
-  - **Total: 2255.5 Bs**
+  - Distancia extra (5 - 3 = 2 km): 2 × 1.5 = 3 Bs
+  - **Total: 13 Bs**
 
 ## Agregar Más Destinos
 
