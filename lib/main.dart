@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'screens/destination_selection_screen.dart';
+import 'screens/custom_route_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -289,30 +290,69 @@ Precisión: ${position.accuracy.toStringAsFixed(1)} m
         ),
         centerTitle: true,  // Para centrarlo como en la imagen
       ),
-      // Botón flotante para acceder a rutas
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DestinationSelectionScreen(
-                adultos: pasajerosAdultos,
-                ninos: pasajerosNinos,
+      // Botones flotantes para rutas
+      floatingActionButton: Stack(
+        children: [
+          // Botón izquierdo: Ruta Personalizada
+          Positioned(
+            left: 30,
+            bottom: 16,
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CustomRouteScreen(
+                      adultos: pasajerosAdultos,
+                      ninos: pasajerosNinos,
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: Colors.purple[600],
+              heroTag: 'custom_route', // Necesario para múltiples FABs
+              icon: const Icon(Icons.edit_location, color: Colors.white),
+              label: const Text(
+                'Personalizada',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
               ),
             ),
-          );
-        },
-        backgroundColor: Colors.blue[700],
-        icon: const Icon(Icons.map, color: Colors.white),
-        label: const Text(
-          'Ver Rutas',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
           ),
-        ),
+          // Botón derecho: Rutas Recomendadas
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DestinationSelectionScreen(
+                      adultos: pasajerosAdultos,
+                      ninos: pasajerosNinos,
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: Colors.blue[700],
+              heroTag: 'recommended_route', // Necesario para múltiples FABs
+              icon: const Icon(Icons.map, color: Colors.white),
+              label: const Text(
+                'Recomendadas',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Column(
         children: [
           // Sección Pasajeros
