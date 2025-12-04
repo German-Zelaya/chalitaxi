@@ -53,7 +53,7 @@ class DestinationData {
         id: 'terminal_terrestre',
         name: 'Terminal de Buses',
         description: 'Terminal Terrestre de Sucre (Ostria Gutiérrez)',
-        coordinates: LatLng(-19.0355, -65.2622),
+        coordinates: LatLng(-19.03968, -65.24682),
         icon: Icons.directions_bus, // Bus
       ),
       Destination(
@@ -66,8 +66,8 @@ class DestinationData {
       Destination(
         id: 'parque_bolivar',
         name: 'Parque Simón Bolívar',
-        description: 'Parque Bolívar',
-        coordinates: LatLng(-19.0430, -65.2570),
+        description: 'Parque Bolívar - Av. Venezuela / Km 7',
+        coordinates: LatLng(-19.04268, -65.26268),
         icon: Icons.nature_people, // Naturaleza/personas
       ),
       Destination(

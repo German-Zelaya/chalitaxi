@@ -21,10 +21,11 @@ class GeocodingService {
 
   /// Busca lugares por texto
   ///
-  /// [query] - Texto a buscar (ej: "Hospital Santa Bárbara" o "Calle Arenales")
+  /// [query] - Texto a buscar (ej: "Hospital Santa Bárbara" o "Mercado")
   /// [limitToSucre] - Si es true, limita la búsqueda a Sucre, Bolivia
   ///
   /// Retorna una lista de resultados encontrados
+  /// Prioriza POIs (puntos de interés) sobre calles y avenidas
   Future<List<GeocodingResult>> searchPlace(
     String query, {
     bool limitToSucre = true,
@@ -37,16 +38,18 @@ class GeocodingService {
       // Construir query con Sucre, Bolivia para mejorar resultados
       String searchQuery = query;
       if (limitToSucre) {
-        searchQuery = '$query, Sucre, Chuquisaca, Bolivia';
+        searchQuery = '$query, Sucre, Bolivia';
       }
 
       final url = Uri.parse(
         '$_baseUrl/search?'
         'q=${Uri.encodeComponent(searchQuery)}&'
         'format=json&'
-        'limit=5&'
+        'limit=10&'  // Aumentado para obtener más resultados
         'addressdetails=1&'
-        'countrycodes=bo', // Solo Bolivia
+        'countrycodes=bo&'  // Solo Bolivia
+        'featuretype=settlement&'  // Priorizar asentamientos y POIs
+        'dedupe=1', // Eliminar duplicados
       );
 
       print('Buscando: $url');
@@ -67,22 +70,30 @@ class GeocodingService {
         final List<dynamic> data = json.decode(response.body);
 
         if (data.isEmpty) {
-          return [];
+          // Si no encuentra nada con los filtros, intenta sin featuretype
+          return _searchWithoutFeatureType(searchQuery);
         }
 
         List<GeocodingResult> results = [];
         for (var item in data) {
-          results.add(GeocodingResult(
-            displayName: item['display_name'] ?? 'Lugar sin nombre',
-            coordinates: LatLng(
-              double.parse(item['lat']),
-              double.parse(item['lon']),
-            ),
-            type: item['type'] ?? 'unknown',
-          ));
+          // Filtrar solo resultados dentro de Sucre (aproximadamente)
+          double lat = double.parse(item['lat']);
+          double lon = double.parse(item['lon']);
+
+          // Área aproximada de Sucre y alrededores
+          bool isInSucre = lat >= -19.1 && lat <= -18.9 &&
+                          lon >= -65.4 && lon <= -65.1;
+
+          if (!limitToSucre || isInSucre) {
+            results.add(GeocodingResult(
+              displayName: item['display_name'] ?? 'Lugar sin nombre',
+              coordinates: LatLng(lat, lon),
+              type: item['type'] ?? 'unknown',
+            ));
+          }
         }
 
-        print('Encontrados ${results.length} resultados');
+        print('Encontrados ${results.length} resultados en Sucre');
         return results;
       } else {
         print('Error HTTP: ${response.statusCode}');
@@ -90,6 +101,55 @@ class GeocodingService {
       }
     } catch (e) {
       print('Error en búsqueda: $e');
+      return [];
+    }
+  }
+
+  /// Búsqueda alternativa sin filtro de featuretype
+  Future<List<GeocodingResult>> _searchWithoutFeatureType(String query) async {
+    try {
+      final url = Uri.parse(
+        '$_baseUrl/search?'
+        'q=${Uri.encodeComponent(query)}&'
+        'format=json&'
+        'limit=10&'
+        'addressdetails=1&'
+        'countrycodes=bo&'
+        'dedupe=1',
+      );
+
+      final response = await http.get(
+        url,
+        headers: {
+          'User-Agent': 'ChaliTaxi/1.0',
+        },
+      ).timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+
+        List<GeocodingResult> results = [];
+        for (var item in data) {
+          double lat = double.parse(item['lat']);
+          double lon = double.parse(item['lon']);
+
+          // Área de Sucre
+          bool isInSucre = lat >= -19.1 && lat <= -18.9 &&
+                          lon >= -65.4 && lon <= -65.1;
+
+          if (isInSucre) {
+            results.add(GeocodingResult(
+              displayName: item['display_name'] ?? 'Lugar sin nombre',
+              coordinates: LatLng(lat, lon),
+              type: item['type'] ?? 'unknown',
+            ));
+          }
+        }
+
+        return results;
+      }
+      return [];
+    } catch (e) {
       return [];
     }
   }
