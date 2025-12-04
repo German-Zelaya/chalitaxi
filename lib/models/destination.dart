@@ -72,7 +72,7 @@ class DestinationData {
       ),
       Destination(
         id: 'aeropuerto',
-        name: 'Aeropuerto Alcantarí',
+        name: 'Aeropuerto Juana Azurduy',
         description: 'Aeropuerto Internacional de Sucre',
         coordinates: LatLng(-19.0071, -65.2887),
         icon: Icons.flight, // Avión

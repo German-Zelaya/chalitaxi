@@ -30,7 +30,7 @@ class SucreLocalPlaces {
       LocalPlace(
         name: 'Hospital Santa Bárbara',
         category: 'Hospital',
-        coordinates: LatLng(-19.0452, -65.2589),
+        coordinates: LatLng(-19.04479, -65.26356),
         searchTerms: ['hospital', 'santa barbara', 'santa bárbara', 'clinica', 'salud'],
       ),
       LocalPlace(
@@ -40,10 +40,10 @@ class SucreLocalPlaces {
         searchTerms: ['hospital', 'san pedro claver', 'claver', 'salud'],
       ),
       LocalPlace(
-        name: 'Hospital Gineco Obstétrico',
+        name: 'Hospital Gineco Obstétrico Jaime Sánchez Porcel',
         category: 'Hospital',
-        coordinates: LatLng(-19.0398, -65.2578),
-        searchTerms: ['hospital', 'gineco', 'obstetrico', 'ginecológico', 'maternidad'],
+        coordinates: LatLng(-19.04531, -65.26830),
+        searchTerms: ['hospital', 'gineco', 'obstetrico', 'ginecológico', 'maternidad', 'jaime sanchez', 'sanchez porcel'],
       ),
       LocalPlace(
         name: 'Clínica Los Pinos',
@@ -160,10 +160,10 @@ class SucreLocalPlaces {
         searchTerms: ['terminal', 'buses', 'transporte', 'viaje'],
       ),
       LocalPlace(
-        name: 'Aeropuerto Alcantarí',
+        name: 'Aeropuerto Juana Azurduy',
         category: 'Aeropuerto',
         coordinates: LatLng(-19.0071, -65.2887),
-        searchTerms: ['aeropuerto', 'alcantari', 'avion', 'vuelo'],
+        searchTerms: ['aeropuerto', 'juana azurduy', 'azurduy', 'avion', 'vuelo'],
       ),
 
       // HOTELES
